@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluxbound — the stream was never water</title>
+<meta name="description" content="A physics puzzle game about a stream you aim, open and transform. Push, tip, fill and burn your way through a vertical laboratory. Free, offline, no accounts.">
+<meta property="og:title" content="Fluxbound">
+<meta property="og:description" content="The stream was never water. A physics puzzle game.">
+<meta property="og:type" content="website">
+<style>
+:root{
+  --void:#080b10; --shell:#12171f; --panel:#1c232e; --panel-hi:#262f3d;
+  --border:#3c4a5e; --text:#e4eaf3; --dim:#8c9aae; --off:#606c7e;
+  --accent:#ffd62a; --blue:#567aca; --water:#5ca8ec; --air:#cee8e0;
+  --fire:#ffc44e; --sand:#e4c478; --elec:#bee8ff; --plasma:#f6b4ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--void);color:var(--text);
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  line-height:1.6;-webkit-font-smoothing:none;
+}
+img{image-rendering:pixelated;max-width:100%;display:block}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+.cut{clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px)}
+
+/* ── Hero ── */
+header{
+  padding:96px 0 72px;text-align:center;position:relative;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 0%,#1a2433 0%,var(--void) 70%);
+  border-bottom:1px solid var(--border);
+}
+header::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.22) 2px 4px);
+}
+h1{
+  font-size:clamp(2.6rem,9vw,5rem);letter-spacing:.14em;font-weight:700;
+  text-shadow:0 3px 0 #000,0 0 34px rgba(92,168,236,.4);
+}
+.rule{width:150px;height:3px;background:var(--accent);margin:20px auto}
+.tag{color:var(--dim);letter-spacing:.22em;font-size:.82rem;text-transform:uppercase}
+.lede{max-width:600px;margin:34px auto 0;color:var(--text);font-size:1.05rem}
+.lede em{color:var(--water);font-style:normal}
+
+/* ── Secciones ── */
+section{padding:72px 0;border-bottom:1px solid var(--border)}
+h2{
+  font-size:.82rem;letter-spacing:.24em;color:var(--accent);
+  text-transform:uppercase;margin-bottom:28px;
+}
+h2::before{content:"▍ "}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{
+  background:var(--panel);border:1px solid var(--border);padding:22px;
+}
+.card h3{font-size:.95rem;letter-spacing:.06em;margin-bottom:10px}
+.card p{color:var(--dim);font-size:.88rem}
+
+/* ── Estados de Flux ── */
+.flux{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.fx{
+  background:var(--shell);border:1px solid var(--border);
+  border-left-width:4px;padding:16px 18px;
+}
+.fx .n{letter-spacing:.14em;font-size:.86rem;font-weight:700}
+.fx .d{color:var(--off);font-size:.78rem;margin-top:6px}
+.fx.locked .n{color:var(--off)}
+.fx.locked .d::after{content:" · not yet";color:var(--accent)}
+.w{border-left-color:var(--water)}   .w .n{color:var(--water)}
+.a{border-left-color:var(--air)}     .a .n{color:var(--air)}
+.f{border-left-color:var(--fire)}    .f .n{color:var(--fire)}
+.s{border-left-color:var(--sand)}    .s .n{color:var(--sand)}
+.e{border-left-color:var(--elec)}    .e .n{color:var(--elec)}
+.p{border-left-color:var(--plasma)}  .p .n{color:var(--plasma)}
+
+/* ── Capturas ── */
+.shots{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.shots figure{background:var(--shell);border:1px solid var(--border);padding:8px}
+.shots figcaption{
+  color:var(--off);font-size:.72rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:8px 4px 2px;
+}
+
+/* ── Descargas ── */
+.dl{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.dl a,.dl span{
+  display:block;padding:18px;text-align:center;text-decoration:none;
+  border:1px solid var(--border);background:var(--panel);color:var(--text);
+  letter-spacing:.1em;font-size:.88rem;
+}
+.dl a:hover{background:var(--panel-hi);border-color:var(--accent);color:var(--accent)}
+.dl span{color:var(--off);border-style:dashed}
+.dl small{display:block;margin-top:6px;font-size:.68rem;color:var(--off);letter-spacing:.06em}
+
+footer{padding:44px 0;text-align:center;color:var(--off);font-size:.78rem}
+footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>FLUXBOUND</h1>
+    <div class="rule"></div>
+    <p class="tag">A physics toy that keeps a secret</p>
+    <p class="lede">
+      You aim a stream. You open it. Things move — because they were pushed,
+      not because a script said so.<br><br>
+      <em>Then the stream stops being water.</em>
+    </p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>How it plays</h2>
+    <div class="grid">
+      <div class="card cut">
+        <h3>One gesture</h3>
+        <p>Hold anywhere. The stream aims where you point and pours while you
+           hold. That is the whole control scheme, and it is enough.</p>
+      </div>
+      <div class="card cut">
+        <h3>Real momentum</h3>
+        <p>Every particle carries mass and speed, and hands both to whatever it
+           hits, at the point it hits. Off-centre means torque. Heavy means
+           barely.</p>
+      </div>
+      <div class="card cut">
+        <h3>Materials answer back</h3>
+        <p>Wood slides, metal ignores you, glass breaks, ice barely holds
+           friction. Wet things get slippery. Hot things catch.</p>
+      </div>
+      <div class="card cut">
+        <h3>Nothing punishes you</h3>
+        <p>Reset is instant. There is no score, no stars, no timer pressing on
+           you. Weird solutions are the point.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>The Flux</h2>
+    <div class="flux">
+      <div class="fx w"><div class="n">WATER</div><div class="d">It pushes. It fills. It soaks.</div></div>
+      <div class="fx a"><div class="n">AIR</div><div class="d">No weight at all. And yet.</div></div>
+      <div class="fx f locked"><div class="n">FIRE</div><div class="d">It does not push. It persuades</div></div>
+      <div class="fx s locked"><div class="n">SAND</div><div class="d">It piles. It buries. It ramps</div></div>
+      <div class="fx e locked"><div class="n">ELECTRIC</div><div class="d">It wants a path</div></div>
+      <div class="fx p locked"><div class="n">PLASMA</div><div class="d">The stream was never water</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Field footage</h2>
+    <div class="shots">
+      <figure><img src="shots/menu.png" alt="Title screen"><figcaption>Title</figcaption></figure>
+      <figure><img src="shots/play.png" alt="A level in progress"><figcaption>First drop</figcaption></figure>
+      <figure><img src="shots/stream.png" alt="The stream pouring"><figcaption>The stream</figcaption></figure>
+      <figure><img src="shots/levels.png" alt="Level select"><figcaption>Levels</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Get it</h2>
+    <div class="dl">
+      <span>macOS<small>in development</small></span>
+      <span>Windows<small>in development</small></span>
+      <span>Linux<small>in development</small></span>
+      <span>iOS &amp; Android<small>in development</small></span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Fluxbound — built with SDL3 and libxmp. Offline, no accounts, no
+       telemetry.</p>
+    <p>© 2026 Javier Bascones</p>
+  </div>
+</footer>
+
+</body>
+</html>
