@@ -1,0 +1,36 @@
+# Publica el sitio en GitHub Pages.
+#
+# El sitio no tiene paso de compilación —es HTML y CSS—, así que el workflow
+# sólo empaqueta el directorio tal cual y lo despliega. Existe porque Pages
+# está configurado en modo "GitHub Actions": sin un workflow, esa opción no
+# construye nada nunca y la web devuelve 404 sin decir por qué.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
